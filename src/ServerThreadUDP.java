@@ -1,11 +1,11 @@
 import java.io.*;
 import java.net.*;
 
-public class ServerThread extends Thread {
+public class ServerThreadUDP extends Thread {
 
-    private Socket socket;
+    private DatagramSocket socket;
 
-    public ServerThread(Socket socket) {
+    public ServerThreadUDP(DatagramSocket socket) {
         this.socket = socket;
     }
 
