@@ -1,9 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,7 +15,7 @@ public class Server {
                 System.out.println("Listening for incoming client requests:");
                 Socket socket = serverSocket.accept();
 
-                System.out.println("Client connected!");
+                System.out.println("Client connected! " + socket);
                 new ServerThread(socket).start();
                 System.out.println("New thread started");
             }
