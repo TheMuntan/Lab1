@@ -11,14 +11,14 @@ public class ServerThread extends Thread {
 
     public void run() {
         try {
-            System.out.println("Listening for client data:");
+            System.out.println("(thread) Listening for client data:");
 
             InputStream input = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String line = reader.readLine(); // reads a line of text
-            System.out.println("Client sent: '" + line + "'");
+            System.out.println("(thread) Client sent: '" + line + "'");
             
-            System.out.println("Sending data to client");
+            System.out.println("(thread) Sending data to client");
 
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
@@ -26,7 +26,7 @@ public class ServerThread extends Thread {
         }
         catch(IOException i)
         {
-            System.out.println("I/O error: " + i.getMessage());
+            System.out.println("(thread) I/O error: " + i.getMessage());
         }
     }
 }
