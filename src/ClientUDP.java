@@ -1,32 +1,25 @@
-
-import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 
 public class ClientUDP {
     
     private DatagramSocket socket = null;
     private DatagramPacket packet = null;
     private static String fileLocation = "c:/temp/source.pdf";
-    private static String fileDownload = "c:/temp/sourceDownload.pdf";
-    private static int maxFileSize = 6022386;
+    private static String fileDownload = "c:/temp/sourceDownloadUDP.pdf";
     private int port = 1234;
     private InetAddress serverAddress;
-    private byte[] byteArr = new byte[2048];
+    private byte[] byteArr = new byte[18432];
 
     public ClientUDP(String address)
     {
         try
         {
-            serverAddress = InetAddress.getByName("localhost");
+            serverAddress = InetAddress.getByName(address);
             socket = new DatagramSocket();
             System.out.println("Client connected");
         }
@@ -80,51 +73,40 @@ public class ClientUDP {
 
     }
 
-    // public void receiveFile(){
+    public void receiveFile(){
 
-    //     try
-    //     {
-    //         System.out.println("Receiving file from server");
-    //         int bytesRead = 0;
-    //         int counter = 0;
-    
-    //         byte byteArr[]  = new byte[maxFileSize];
+        try
+        {
+            System.out.println("Receiving file from server");
+            socket.receive(packet);
+            serverAddress = packet.getAddress();
+            port = packet.getPort();
+            System.out.println("Server address: " + serverAddress);
+            System.out.println("Port: " + port);
 
-    //         InputStream input = socket.getInputStream();
-    //         FileOutputStream fileOutput = new FileOutputStream(fileDownload);
-    //         BufferedOutputStream buffOutput = new BufferedOutputStream(fileOutput);
+            byteArr = packet.getData();
+            
+            File file = new File(fileDownload); // Creating the file
+            FileOutputStream fileOutput = new FileOutputStream(file); // Creating the stream through which we write the file content
+            
+            fileOutput.write(byteArr);
+            fileOutput.close();
 
-    //         bytesRead = input.read(byteArr, 0, byteArr.length);
-    //         counter = bytesRead;
-
-    //         do {
-    //             bytesRead = input.read(byteArr, counter, (byteArr.length - counter));
-    //             if (bytesRead >= 0)
-    //                 counter += bytesRead;
-    //         } while (bytesRead > -1);
-    
-    //         buffOutput.write(byteArr, 0 , counter);
-    //         buffOutput.flush();
-    //         System.out.println("File received: " + fileDownload + " (" + counter + " bytes)");
-    //         fileOutput.close();
-    //         buffOutput.close();
-    //         socket.close();
-    //     }
-    //     catch(IOException i)
-    //     {
-    //         System.out.println("I/O error: " + i.getMessage());
-    //     }
-
-    // }
+        }
+        catch(IOException i)
+        {
+            System.out.println(i.getMessage());
+        }
+    }
 
 
     public static void main(String[] args) {
         ClientUDP client = new ClientUDP("localhost"); //localhost or 127.0.0.1 can both be used for server on the same pc
         
-        //client.sendData(fileLocation);
-        // client.receiveFile();
-        client.sendData("Yo whaddup udp server bro?");
-        client.receiveData();
+        client.sendData(fileLocation);
+        client.receiveFile();
+        //client.sendData("Yo whaddup udp server bro?");
+        //client.receiveData();
         client.closeSocket();
 
         System.out.println("End of client");
