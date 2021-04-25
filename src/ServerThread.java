@@ -42,7 +42,6 @@ public class ServerThread extends Thread {
             buffInput.close();
             socket.close();
         }
-
         catch(IOException i)
         {
             System.out.println("(thread) I/O error: " + i.getMessage());

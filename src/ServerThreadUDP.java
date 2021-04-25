@@ -4,14 +4,12 @@ import java.net.*;
 public class ServerThreadUDP extends Thread {
 
     DatagramSocket socket = null;
-    private byte[] byteArr = new byte[18432];
     private String received;
     InetAddress address;
     int port;
 
-    public ServerThreadUDP(DatagramSocket socket, DatagramPacket packet, byte[] byteArr) {
+    public ServerThreadUDP(DatagramSocket socket, DatagramPacket packet) {
         this.socket = socket;
-        this.byteArr = byteArr;
         System.out.println("(thread) Unpacking received packet:");
         received = new String(packet.getData(), 0, packet.getLength());
         address = packet.getAddress();
@@ -23,10 +21,11 @@ public class ServerThreadUDP extends Thread {
         try {          
             System.out.println("(thread) Received packet: " + received);
 
-            byteArr = readFileToByteArray(received);
+            byte[] byteArr = readFileToByteArray(received);
 
             DatagramPacket packetSend = new DatagramPacket(byteArr, byteArr.length, address, port);
             socket.send(packetSend);        
+            System.out.println("Packet sent to address " + address + " and on port " + port);
         }
         catch(IOException i)
         {
@@ -44,7 +43,6 @@ public class ServerThreadUDP extends Thread {
             fileInput = new FileInputStream(file);
             int read = fileInput.read(byteArr);
             fileInput.close();
-            System.out.println(read);
         } catch (IOException i) {
             i.printStackTrace();
         }

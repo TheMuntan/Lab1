@@ -19,7 +19,7 @@ public class ServerUDP {
 
                 System.out.println("Packet received!");
                 System.out.println("New thread started");
-                new ServerThreadUDP(serverSocket, packet, byteArr).start();
+                new ServerThreadUDP(serverSocket, packet).start();
         
             }
          }

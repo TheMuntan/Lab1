@@ -13,7 +13,7 @@ public class ClientUDP {
     private static String fileDownload = "c:/temp/sourceDownloadUDP.pdf";
     private int port = 1234;
     private InetAddress serverAddress;
-    private byte[] byteArr = new byte[18432];
+    private byte[] byteArr2 = new byte[65535]; //maximum theoretical UDP packet size is 65535 bytes
 
     public ClientUDP(String address)
     {
@@ -21,13 +21,12 @@ public class ClientUDP {
         {
             serverAddress = InetAddress.getByName(address);
             socket = new DatagramSocket();
-            System.out.println("Client connected");
+            System.out.println("Socket created");
         }
         catch(IOException i)
         {
             System.out.println(i.getMessage());
         }
-
     }
 
     public void closeSocket() {
@@ -40,7 +39,7 @@ public class ClientUDP {
         try
         {
             System.out.println("Sending data to server: " + data);
-            byteArr = data.getBytes();
+            byte[] byteArr = data.getBytes();
             packet = new DatagramPacket(byteArr, byteArr.length, serverAddress, port);
             socket.send(packet);
         }
@@ -48,7 +47,6 @@ public class ClientUDP {
         {
             System.out.println(i.getMessage());
         }
-
     }
 
     public void receiveData(){
@@ -70,7 +68,6 @@ public class ClientUDP {
         {
             System.out.println(i.getMessage());
         }
-
     }
 
     public void receiveFile(){
@@ -78,18 +75,18 @@ public class ClientUDP {
         try
         {
             System.out.println("Receiving file from server");
-            socket.receive(packet);
-            serverAddress = packet.getAddress();
-            port = packet.getPort();
-            System.out.println("Server address: " + serverAddress);
-            System.out.println("Port: " + port);
+            DatagramPacket filePacket = new DatagramPacket(byteArr2, byteArr2.length, serverAddress, port);
+            socket.receive(filePacket);
+            serverAddress = filePacket.getAddress();
+            port = filePacket.getPort();
+            System.out.println("File received from address " + serverAddress + " and on port " + port);
 
-            byteArr = packet.getData();
+            byteArr2 = filePacket.getData();
             
             File file = new File(fileDownload); // Creating the file
             FileOutputStream fileOutput = new FileOutputStream(file); // Creating the stream through which we write the file content
             
-            fileOutput.write(byteArr);
+            fileOutput.write(byteArr2);
             fileOutput.close();
 
         }
