@@ -1,5 +1,9 @@
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class ServerThreadUDP extends Thread {
 
@@ -41,7 +45,7 @@ public class ServerThreadUDP extends Thread {
 
         try {
             fileInput = new FileInputStream(file);
-            int read = fileInput.read(byteArr);
+            fileInput.read(byteArr);
             fileInput.close();
         } catch (IOException i) {
             i.printStackTrace();
